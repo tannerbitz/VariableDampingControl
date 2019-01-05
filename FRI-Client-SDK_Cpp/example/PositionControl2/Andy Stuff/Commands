@@ -1,0 +1,6 @@
+Command to run main posiioncontrol file:
+justin@linux-p43n:~/Desktop/FRI-Client-SDK_Cpp/example/PositionControl2> ./PositionControl TrajectoryFileiwa.txt
+
+
+Probably how he compiled PositionControl:
+justin@linux-p43n:~/Desktop/FRI-Client-SDK_Cpp/example/PositionControl2> make
