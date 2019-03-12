@@ -45,7 +45,7 @@ int main (int argc, char** argv)
     char* filename = argv[1]; //Requiered command line argument for the file name for trajectory file
     const char* hostname = (argc >= 3) ? argv[2] : DEFAULT_IP; //optional command line argument for ip address (default is for KONI)
     int port = (argc >= 4) ? atoi(argv[3]) : DEFAULT_PORTID; //optional comand line argument for port
-   
+
 
     FILE *InputFile;
     FILE *OutputFile;
@@ -58,7 +58,7 @@ int main (int argc, char** argv)
     int rows=0;
     int i=0;
     int cycle=2000;
-   
+
     int stime=0;
     float sampletime=0; //will be determined from FRI
     double MJoint[7]={0}; //last measured joint position (not sure time when controller measured, be careful using this for feedback loop)
@@ -70,7 +70,7 @@ int main (int argc, char** argv)
     double MaxJointLimitRad[7]={2.9671,2.0944,2.9671,2.0944,2.9671,2.0944,3.0543};//Max joint limits in radians (can be changed to further restrict motion of robot)
     double MinJointLimitRad[7]={-2.9671,-2.0944,-2.9671,-2.0944,-2.9671,-2.0944,-3.0543}; //Min joint limits in radians (can be changed to further restrict motion of robot)
     double FirstPositionDelta[7]={0.0175,0.0175,0.0175,0.0175,0.0175,0.0175,0.0175}; //maximum deviation from initial position in trajectory from start position in robot(radians)
-   
+
 
     //Get value for the time step of the command cycle (used for determining max velocity)
    // sampletime=client.GetTimeStep();
@@ -82,7 +82,7 @@ int main (int argc, char** argv)
     {
         MaxRadPerStep[i]=sampletime*MaxRadPerSec[i]; //converts angular velocity to discrete time step
     }
- 
+
 
    // create new joint position client
       PositionControlClient client;
@@ -98,7 +98,7 @@ client.intvalues(MaxRadPerStep, MaxJointLimitRad, MinJointLimitRad);
 
     // pass connection and client to a new FRI client application
     ClientApplication app(connection, client);
-   
+
     // connect client application to KUKA Sunrise controller
     app.connect(port, hostname);
 
@@ -124,10 +124,17 @@ client.intvalues(MaxRadPerStep, MaxJointLimitRad, MinJointLimitRad);
         fprintf(stdout,"Error in reading file!\n");
         return 1;
     }
-  
+
 
     //read in first 7 joint positions (these should be in radians)
-    success2=fscanf(InputFile, "%lf %lf %lf %lf %lf %lf %lf", &client.NextJoint[0],&client.NextJoint[1],&client.NextJoint[2],&client.NextJoint[3],&client.NextJoint[4],&client.NextJoint[5],&client.NextJoint[6]);
+    success2=fscanf(InputFile, "%lf %lf %lf %lf %lf %lf %lf",
+                                &client.NextJoint[0],
+                                &client.NextJoint[1],
+                                &client.NextJoint[2],
+                                &client.NextJoint[3],
+                                &client.NextJoint[4],
+                                &client.NextJoint[5],
+                                &client.NextJoint[6]);
     if (!success2)
     {
         fprintf(stdout,"Error in reading file!\n");
@@ -139,7 +146,17 @@ client.intvalues(MaxRadPerStep, MaxJointLimitRad, MinJointLimitRad);
      memcpy(MJoint,client.GetMeasJoint(),sizeof(double)*7 );
      memcpy(ETorque,client.GetExtTor(),sizeof(double)*7 ); //gets the external torques at the robot joints (supposedly subtracts the torques caused by the robot)
     //print out to file for condition 0
-    fprintf(OutputFile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %d\n",count,MJoint[0],MJoint[1],MJoint[2],MJoint[3],MJoint[4],MJoint[5],MJoint[6],ETorque[0],ETorque[1],ETorque[2],ETorque[3],ETorque[4],ETorque[5],ETorque[6],stime);
+    fprintf(OutputFile, "%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %d\n",
+                        count,
+                        MJoint[0],MJoint[1],
+                        MJoint[2],MJoint[3],
+                        MJoint[4],MJoint[5],
+                        MJoint[6],
+                        ETorque[0],ETorque[1],
+                        ETorque[2],ETorque[3],
+                        ETorque[4],ETorque[5],
+                        ETorque[6],
+                        stime);
 
 
     for(i=0;i<7;i++)

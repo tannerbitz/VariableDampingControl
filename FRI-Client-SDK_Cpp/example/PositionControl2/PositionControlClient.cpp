@@ -54,24 +54,20 @@ void PositionControlClient::command()
 {
 
     int Errors=0;
-    for(int i=0; i<7; i++)
-    {
-        if(MinJointLimitRad[i]>NextJoint[i])
-        {
+    for(int i=0; i<7; i++){
+        if(MinJointLimitRad[i]>NextJoint[i]){
             //fprintf(stdout,"minimum joint limit error.Joint:%d\tmin:%lf\tnext:%lf\n",i,MinJointLimitRad[i],NextJoint[i]);
 
             Errors=2;
         }
 
 
-        if(MaxJointLimitRad[i]<NextJoint[i])
-        {
+        if(MaxJointLimitRad[i]<NextJoint[i]){
          //fprintf(stdout,"maximum joint limit error.Joint:%d\n",i);
             Errors=2;
         }
 
-        if(MaxRadPerStep[i]<(fabs(LastJoint[i]-NextJoint[i])))
-        {
+        if(MaxRadPerStep[i]<(fabs(LastJoint[i]-NextJoint[i]))){
            //fprintf(stdout,"maximum joint velocity error.Joint:%d\n",i);
             Errors=1;
         }
@@ -85,11 +81,7 @@ void PositionControlClient::command()
         fprintf(stdout,"Error in Position Control Clinet:Type:%d\n",Errors);
 
     }*/
-
-
     robotCommand().setJointPosition(NextJoint);
-
-
 }
 
 
@@ -132,5 +124,3 @@ int PositionControlClient::GetTimeStamp()
     SecTime=robotState().getTimestampNanoSec();
     return SecTime;
 }
-
-
